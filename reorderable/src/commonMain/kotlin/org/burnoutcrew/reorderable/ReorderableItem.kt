@@ -76,7 +76,8 @@ fun ReorderableItem(
                 key == state.dragCancelledAnimation.position?.key
             }
             if (cancel) {
-                Modifier.zIndex(1f)
+                Modifier
+                    .zIndex(1f)
                     .graphicsLayer {
                         translationX = if (!orientationLocked || !state.isVerticalScroll) state.dragCancelledAnimation.offset.x else 0f
                         translationY = if (!orientationLocked || state.isVerticalScroll) state.dragCancelledAnimation.offset.y else 0f

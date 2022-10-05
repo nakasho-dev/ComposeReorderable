@@ -15,11 +15,7 @@
  */
 package org.burnoutcrew.reorderable
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
-import androidx.compose.runtime.withFrameMillis
+import androidx.compose.runtime.*
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.util.fastForEach
 import kotlinx.coroutines.CoroutineScope
@@ -228,24 +224,27 @@ abstract class ReorderableState<T>(
         }
         var target: T? = null
         var highScore = -1
-        val right = curX + draggedItemInfo.width
-        val bottom = curY + draggedItemInfo.height
         val dx = curX - draggedItemInfo.left
         val dy = curY - draggedItemInfo.top
 
+        val rightOffset = curX + draggedItemInfo.width * 1.5
+        val leftOffset = curX - draggedItemInfo.width / 2
+        val topOffset = curY - draggedItemInfo.height / 2
+        val bottomOffset = curY + draggedItemInfo.height * 1.5
+
         items.fastForEach { item ->
             if (dx > 0) {
-                val diff = item.right - right
+                val diff = item.right - rightOffset
                 if (diff < 0 && item.right > draggedItemInfo.right) {
                     val score = diff.absoluteValue
                     if (score > highScore) {
-                        highScore = score
+                        highScore = score.toInt()
                         target = item
                     }
                 }
             }
             if (dx < 0) {
-                val diff = item.left - curX
+                val diff = item.left - leftOffset
                 if (diff > 0 && item.left < draggedItemInfo.left) {
                     val score = diff.absoluteValue
                     if (score > highScore) {
@@ -255,7 +254,7 @@ abstract class ReorderableState<T>(
                 }
             }
             if (dy < 0) {
-                val diff = item.top - curY
+                val diff = item.top - topOffset
                 if (diff > 0 && item.top < draggedItemInfo.top) {
                     val score = diff.absoluteValue
                     if (score > highScore) {
@@ -265,11 +264,11 @@ abstract class ReorderableState<T>(
                 }
             }
             if (dy > 0) {
-                val diff = item.bottom - bottom
+                val diff = item.bottom - bottomOffset
                 if (diff < 0 && item.bottom > draggedItemInfo.bottom) {
                     val score = diff.absoluteValue
                     if (score > highScore) {
-                        highScore = score
+                        highScore = score.toInt()
                         target = item
                     }
                 }
